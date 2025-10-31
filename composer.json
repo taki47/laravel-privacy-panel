@@ -1,6 +1,8 @@
 {
     "name": "taki47/laravel-cookie-consent",
     "description": "Advanced Laravel GDPR cookie consent manager with categorized consent and automatic script blocking.",
+    "type": "library",
+    "license": "MIT",
     "require": {
         "php": "^8.2",
         "illuminate/support": "^10.0|^11.0|^12.0"
