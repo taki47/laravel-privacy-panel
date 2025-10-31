@@ -1,0 +1,27 @@
+{
+    "name": "taki47/laravel-cookie-consent",
+    "description": "Advanced Laravel GDPR cookie consent manager with categorized consent and automatic script blocking.",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0|^11.0|^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Taki47\\CookieConsent\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lajos Takacs",
+            "email": "info@takiwebneked.hu"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Taki47\\CookieConsent\\CookieConsentServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}
