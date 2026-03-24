@@ -106,12 +106,12 @@ class PrivacyPanelController extends Controller
      */
     public function list()
     {
-        if (!Storage::disk('local')->exists('panel-scan.json')) {
-            return response()->json(['error' => 'panel-scan.json not found'], 404);
+        if (!Storage::disk('local')->exists('cookie-scan.json')) {
+            return response()->json(['error' => 'cookie-scan.json not found'], 404);
         }
 
         // Decode JSON and validate structure
-        $data = json_decode(Storage::disk('local')->get('panel-scan.json'), true);
+        $data = json_decode(Storage::disk('local')->get('cookie-scan.json'), true);
 
         if (!isset($data['cookies']) || !is_array($data['cookies'])) {
             return response()->json(['error' => 'Invalid cookie-scan.json format'], 422);
