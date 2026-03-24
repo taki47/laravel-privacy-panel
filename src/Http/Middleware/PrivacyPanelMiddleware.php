@@ -30,7 +30,7 @@ class PrivacyPanelMiddleware
     public function handle($request, Closure $next)
     {
         // Attempt to read the user's consent preferences from the cookie
-        $cookie = Cookie::get('privacy-panel');
+        $cookie = Cookie::get('cookie-consent');
 
         // If not found, provide default preferences
         $consent = $cookie

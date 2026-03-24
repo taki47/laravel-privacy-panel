@@ -31,7 +31,7 @@
 <script src="{{ asset('vendor/privacy-panel/js/panel.js') }}" defer></script>
 
 <div id="privacy-panel"
-     class="position-fixed bottom-0 start-0 w-100 bg-light border-top shadow-lg py-4 px-3 {{ Cookie::get('privacy-panel') ? 'd-none' : '' }}"
+     class="position-fixed bottom-0 start-0 w-100 bg-light border-top shadow-lg py-4 px-3 {{ Cookie::get('cookie-consent') ? 'd-none' : '' }}"
      style="z-index: 1055;">
     <div class="container text-center">
         <h2 class="fw-bold mb-2 text-dark">

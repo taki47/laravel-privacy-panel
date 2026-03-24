@@ -104,7 +104,7 @@ class PrivacyPanelController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function list(Request $request)
+    public function list()
     {
         if (!Storage::disk('local')->exists('panel-scan.json')) {
             return response()->json(['error' => 'panel-scan.json not found'], 404);
