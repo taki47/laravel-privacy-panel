@@ -1,4 +1,4 @@
-#cookie-reopen-btn {
+#privacy-panel-btn {
   width: 50px;
   height: 50px;
   font-size: 1.2rem;
@@ -6,12 +6,12 @@
   z-index: 2000;
 }
 
-#cookie-reopen-btn:hover {
+#privacy-panel-btn:hover {
   transform: scale(1.1);
   background-color: #212529;
 }
 
-#cookie-details {
+#privacy-panel-details {
   position: relative;
   z-index: 1060 !important;
   background: #fff;

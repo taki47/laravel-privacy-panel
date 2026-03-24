@@ -1,6 +1,6 @@
 <?php
 
-namespace Taki47\CookieConsent\Console\Commands;
+namespace Taki47\PrivacyPanel\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;

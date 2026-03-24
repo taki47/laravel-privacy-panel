@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Taki47\CookieConsent\Http\Controllers\CookieConsentController;
+use Taki47\PrivacyPanel\Http\Controllers\PrivacyPanelController;
 
-Route::controller(CookieConsentController::class)->group(function () {
-    Route::post('/cookie-consent', 'store')->name('cookie-consent.store');
-    Route::get('/cookie-consent/cookies', 'list')->name('cookie-consent.list');
+Route::controller(PrivacyPanelController::class)->group(function () {
+    Route::post('/privacy-panel', 'store')->name('privacy-panel.store');
+    Route::get('/privacy-panel/cookies', 'list')->name('privacy-panel.list');
 });

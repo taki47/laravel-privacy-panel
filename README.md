@@ -1,6 +1,6 @@
-# Laravel Cookie Consent
+# Laravel Privacy Panel
 
-A modern, lightweight, and fully self-contained **GDPR-ready cookie consent manager** for Laravel.  
+A modern, lightweight, and fully self-contained **GDPR-ready privacy panel** for Laravel.  
 Automatically detects, blocks, and manages analytics and marketing scripts with zero external dependencies.
 
 ---
@@ -24,17 +24,17 @@ Automatically detects, blocks, and manages analytics and marketing scripts with 
 Install via Composer:
 
 ```
-composer require taki47/laravel-cookie-consent
+composer require taki47/laravel-privacy-panel
 ```
 
 Publish assets:
 
 ```
-php artisan vendor:publish --provider="Taki47\CookieConsent\CookieConsentServiceProvider" --tag=public
+php artisan vendor:publish --provider="Taki47\PrivacyPanel\PrivacyPanelServiceProvider" --tag=public
 ```
 
 This will publish:
-public/vendor/cookie-consent/
+public/vendor/privacy-panel/
 
 
 Before going live, scan your site so the banner can display cookie details (name, purpose, expiry) correctly:
@@ -53,12 +53,12 @@ The `cookie:scan` command supports the following optional parameters:
 
 Include the consent banner in your base layout (for example layouts/app.blade.php):
 ```
-@include('cookie-consent::banner')
+@include('privacy-panel::banner')
 ```
 
 Load the cookie script before any analytics scripts:
 ```
-<script src="{{ asset('vendor/cookie-consent/js/cookie-consent.js') }}"></script>
+<script src="{{ asset('vendor/privacy-panel/js/panel.js') }}"></script>
 ```
 
 ## Artisan command

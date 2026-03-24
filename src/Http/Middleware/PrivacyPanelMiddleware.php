@@ -1,6 +1,6 @@
 <?php
 
-namespace Taki47\CookieConsent\Http\Middleware;
+namespace Taki47\PrivacyPanel\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Cookie;
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Cookie;
  * the global `cookieConsent` variable, allowing UI components
  * such as banners or scripts to react dynamically.
  */
-class CookieConsentMiddleware
+class PrivacyPanelMiddleware
 {
     /**
      * Handle an incoming HTTP request and share cookie consent data.
@@ -30,7 +30,7 @@ class CookieConsentMiddleware
     public function handle($request, Closure $next)
     {
         // Attempt to read the user's consent preferences from the cookie
-        $cookie = Cookie::get('cookie_consent');
+        $cookie = Cookie::get('privacy-panel');
 
         // If not found, provide default preferences
         $consent = $cookie
@@ -42,7 +42,7 @@ class CookieConsentMiddleware
             ];
 
         // Make consent data available to all views
-        view()->share('cookieConsent', $consent);
+        view()->share('privacyPanel', $consent);
 
         // Continue request handling
         return $next($request);
