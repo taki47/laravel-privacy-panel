@@ -1,5 +1,5 @@
 /**
- * Laravel Cookie Consent
+ * Laravel Privacy Panel
  * -----------------------
  * Handles automatic blocking/unblocking of analytics & marketing scripts
  * based on user's consent.
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const { translations, routes, csrf } = window.CookieConsent || {};
 
-    const reopenBtn = document.getElementById('cookie-reopen-btn');
-    const banner = document.getElementById('cookie-banner');
+    const reopenBtn = document.getElementById('privacy-panel-btn');
+    const banner = document.getElementById('privacy-panel');
     const statsBox = document.getElementById('stats');
     const marketingBox = document.getElementById('marketing');
 
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     document.getElementById('show-details')?.addEventListener('click', async function () {
         const detailsBtn = document.getElementById('show-details'); if (detailsBtn.dataset.locked === 'true') return; detailsBtn.dataset.locked = 'true'; setTimeout(() => (detailsBtn.dataset.locked = 'false'), 300);
-        const detailsBox = document.getElementById('cookie-details');
+        const detailsBox = document.getElementById('privacy-panel-details');
         if (!detailsBox) return;
 
         const isHidden = detailsBox.style.display === 'none' || !detailsBox.style.display;

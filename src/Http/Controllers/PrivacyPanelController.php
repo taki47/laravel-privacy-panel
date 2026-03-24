@@ -1,6 +1,6 @@
 <?php
 
-namespace Taki47\CookieConsent\Http\Controllers;
+namespace Taki47\PrivacyPanel\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class CookieConsentController
+ * Class PrivacyPanelController
  *
- * @package Modules\CookieConsent\Http\Controllers
+ * @package Modules\PrivacyPanel\Http\Controllers
  *
  * This controller manages user consent for cookies in compliance
  * with GDPR and ePrivacy regulations. It handles both the storing
@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\Storage;
  *     GET /cookie-consent/cookies
  *     → Returns categorized cookies currently available
  */
-class CookieConsentController extends Controller
+class PrivacyPanelController extends Controller
 {
     /**
      * Store the user's cookie consent preferences.
@@ -106,12 +106,12 @@ class CookieConsentController extends Controller
      */
     public function list(Request $request)
     {
-        if (!Storage::disk('local')->exists('cookie-scan.json')) {
-            return response()->json(['error' => 'cookie-scan.json not found'], 404);
+        if (!Storage::disk('local')->exists('panel-scan.json')) {
+            return response()->json(['error' => 'panel-scan.json not found'], 404);
         }
 
         // Decode JSON and validate structure
-        $data = json_decode(Storage::disk('local')->get('cookie-scan.json'), true);
+        $data = json_decode(Storage::disk('local')->get('panel-scan.json'), true);
 
         if (!isset($data['cookies']) || !is_array($data['cookies'])) {
             return response()->json(['error' => 'Invalid cookie-scan.json format'], 422);

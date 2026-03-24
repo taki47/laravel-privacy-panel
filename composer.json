@@ -1,15 +1,15 @@
 {
-    "name": "taki47/laravel-cookie-consent",
+    "name": "taki47/laravel-privacy-panel",
     "description": "Advanced Laravel GDPR cookie consent manager with categorized consent and automatic script blocking.",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^10.0|^11.0|^12.0"
+        "illuminate/support": "^10.0|^11.0|^12.0|^13.0"
     },
     "autoload": {
         "psr-4": {
-            "Taki47\\CookieConsent\\": "src/"
+            "Taki47\\PrivacyPanel\\": "src/"
         }
     },
     "authors": [
@@ -21,7 +21,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Taki47\\CookieConsent\\CookieConsentServiceProvider"
+                "Taki47\\PrivacyPanel\\PrivacyPanelServiceProvider"
             ]
         }
     },
