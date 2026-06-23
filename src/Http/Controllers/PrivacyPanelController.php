@@ -63,7 +63,16 @@ class PrivacyPanelController extends Controller
      */
     public function store(Request $request)
     {
-        $consent = $request->all();
+        $validated = $request->validate([
+            'statistics' => ['required', 'boolean'],
+            'marketing' => ['required', 'boolean'],
+        ]);
+
+        $consent = [
+            'necessary' => true,
+            'statistics' => $validated['statistics'],
+            'marketing' => $validated['marketing'],
+        ];
 
         // Queue the consent cookie for 1 year (in minutes)
         $cookie = Cookie::make(

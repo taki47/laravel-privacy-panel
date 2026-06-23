@@ -15,10 +15,18 @@
 {{-- JSON adatátadás a JS-nek --}}
 @php
     $translations = __('privacy-panel::cookiebanner');
+    $initialConsent = $privacyPanel ?? [
+        'necessary' => true,
+        'statistics' => false,
+        'marketing' => false,
+    ];
 @endphp
 <script>
     window.CookieConsent = {
         translations: @json($translations),
+        // The cookie is encrypted by Laravel, so the browser cannot decode it
+        // directly. The middleware has already decrypted and normalized it.
+        consent: @json($initialConsent),
         routes: {
             store: "{{ route('privacy-panel.store') }}",
             list: "{{ route('privacy-panel.list') }}"

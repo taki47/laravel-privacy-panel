@@ -15,20 +15,40 @@
  * License: MIT
  */
 
+const privacyPanelScriptPatterns = [
+    { match: /googletagmanager\.com|google-analytics\.com/i, category: 'statistics' },
+    { match: /facebook\.net|fbq\(|fbevents\.js/i, category: 'marketing' },
+    { match: /hotjar\.com/i, category: 'statistics' },
+    { match: /tiktok\.com/i, category: 'marketing' },
+    { match: /youtube\.com|youtube-nocookie\.com/i, category: 'marketing' },
+    { match: /linkedin\.com|licdn\.com/i, category: 'marketing' },
+];
+
+function privacyPanelScriptCategory(script) {
+    const src = script.src || script.getAttribute('data-src') || '';
+    const code = script.textContent || '';
+    return privacyPanelScriptPatterns.find(pattern =>
+        pattern.match.test(src) || pattern.match.test(code)
+    )?.category;
+}
+
+function privacyPanelCategoryAllowed(category) {
+    return window.CookieConsent?.consent?.[category] === true;
+}
+
 (function () {
-    // Observe script insertions early to block before execution
-    const blockPatterns = /googletagmanager\.com|google-analytics\.com|facebook\.net|fbevents\.js|hotjar\.com|tiktok\.com|youtube\.com|linkedin\.com/i;
+    // Observe script insertions early to block known trackers when not allowed.
 
     const observer = new MutationObserver(mutations => {
         mutations.forEach(m => {
             m.addedNodes.forEach(node => {
                 if (node.tagName === 'SCRIPT' && !node.hasAttribute('data-cookie-category')) {
                     const src = node.src || '';
-                    const code = node.textContent || '';
+                    const category = privacyPanelScriptCategory(node);
 
-                    if (blockPatterns.test(src) || blockPatterns.test(code)) {
+                    if (category && !privacyPanelCategoryAllowed(category)) {
                         node.type = 'text/plain';
-                        node.setAttribute('data-cookie-category', 'statistics');
+                        node.setAttribute('data-cookie-category', category);
                         if (src) {
                             node.setAttribute('data-src', src);
                             node.removeAttribute('src');
@@ -45,24 +65,23 @@
 document.addEventListener('DOMContentLoaded', function () {
     autoBlockScripts();
 
-    // Re-enable scripts if consent cookie already exists
-    const savedCookie = document.cookie.split('; ').find(row => row.startsWith('cookie-consent='));
-    if (savedCookie) {
-        try {
-            const jsonValue = atob(savedCookie.split('=')[1]);
-            const consent = JSON.parse(jsonValue);
-            enableScriptsFor(consent);
-        } catch (e) {
-            console.warn('⚠️ Failed to parse cookie-consent:', e);
-        }
-    }
+    const { translations, routes, csrf, consent: savedConsent } = window.CookieConsent || {};
 
-    const { translations, routes, csrf } = window.CookieConsent || {};
+    // Laravel encrypts cookies by default. The server-side middleware therefore
+    // exposes the already decrypted preferences instead of parsing document.cookie.
+    if (savedConsent && typeof savedConsent === 'object') {
+        enableScriptsFor(savedConsent);
+    }
 
     const reopenBtn = document.getElementById('privacy-panel-btn');
     const banner = document.getElementById('privacy-panel');
     const statsBox = document.getElementById('stats');
     const marketingBox = document.getElementById('marketing');
+
+    if (savedConsent && typeof savedConsent === 'object') {
+        if (statsBox) statsBox.checked = savedConsent.statistics === true;
+        if (marketingBox) marketingBox.checked = savedConsent.marketing === true;
+    }
 
     /**
      * Escape HTML to prevent XSS
@@ -103,7 +122,12 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             credentials: 'same-origin',
             body: JSON.stringify(consent)
-        }).then(() => {
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to save consent (${response.status})`);
+            }
+
+            window.CookieConsent.consent = consent;
             enableScriptsFor(consent);
 
             // Update Google Consent Mode if available
@@ -123,6 +147,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Hide banner, show reopen button
             banner.classList.add('d-none');
             reopenBtn.classList.remove('d-none');
+        }).catch(error => {
+            console.error('Failed to save cookie consent:', error);
         });
     }
 
@@ -211,25 +237,13 @@ document.addEventListener('DOMContentLoaded', function () {
  * Detect and block known tracking scripts (inline and external)
  */
 function autoBlockScripts() {
-    const knownPatterns = [
-        { match: /googletagmanager\.com|google-analytics\.com/, category: 'statistics' },
-        { match: /facebook\.net|fbq\(|fbevents\.js/, category: 'marketing' },
-        { match: /hotjar\.com/, category: 'statistics' },
-        { match: /tiktok\.com/, category: 'marketing' },
-        { match: /youtube\.com|youtube-nocookie\.com/, category: 'marketing' },
-        { match: /linkedin\.com|licdn\.com/, category: 'marketing' },
-    ];
-
     document.querySelectorAll('script:not([data-cookie-category]):not([type="text/plain"])').forEach(script => {
-        const src = script.src || '';
-        const inline = script.innerText;
-
-        const matched = knownPatterns.find(p => p.match.test(src) || p.match.test(inline));
-        if (matched) {
-            script.setAttribute('data-cookie-category', matched.category);
+        const category = privacyPanelScriptCategory(script);
+        if (category && !privacyPanelCategoryAllowed(category)) {
+            script.setAttribute('data-cookie-category', category);
             script.setAttribute('type', 'text/plain');
-            if (src) {
-                script.setAttribute('data-src', src);
+            if (script.src) {
+                script.setAttribute('data-src', script.src);
                 script.removeAttribute('src');
             }
         }
@@ -250,14 +264,19 @@ function enableScriptsFor(consent) {
 
         const newScript = document.createElement('script');
 
+        for (const attribute of oldScript.attributes) {
+            if (!['type', 'data-src', 'data-cookie-category'].includes(attribute.name)) {
+                newScript.setAttribute(attribute.name, attribute.value);
+            }
+        }
+
         if (oldScript.dataset.src) {
             newScript.src = oldScript.dataset.src;
-            newScript.async = true;
         } else {
-            newScript.text = oldScript.innerText;
+            newScript.text = oldScript.textContent;
         }
 
         newScript.setAttribute('data-cookie-category', category);
-        document.head.appendChild(newScript);
+        oldScript.replaceWith(newScript);
     });
 }

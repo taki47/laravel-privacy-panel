@@ -33,13 +33,14 @@ class PrivacyPanelMiddleware
         $cookie = Cookie::get('cookie-consent');
 
         // If not found, provide default preferences
-        $consent = $cookie
-            ? json_decode($cookie, true)
-            : [
-                'necessary' => true,
-                'statistics' => false,
-                'marketing' => false,
-            ];
+        $storedConsent = $cookie ? json_decode($cookie, true) : null;
+        $storedConsent = is_array($storedConsent) ? $storedConsent : [];
+
+        $consent = [
+            'necessary' => true,
+            'statistics' => ($storedConsent['statistics'] ?? false) === true,
+            'marketing' => ($storedConsent['marketing'] ?? false) === true,
+        ];
 
         // Make consent data available to all views
         view()->share('privacyPanel', $consent);
