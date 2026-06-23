@@ -29,9 +29,12 @@ class PrivacyPanelServiceProvider extends ServiceProvider
             ]);
         }
 
-        $this->publishes([
+        $publicAssets = [
             __DIR__.'/../public' => public_path('vendor/privacy-panel'),
-        ], 'public');
+        ];
+
+        $this->publishes($publicAssets, 'public');
+        $this->publishes($publicAssets, 'laravel-assets');
 
     }
 

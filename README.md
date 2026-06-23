@@ -33,6 +33,9 @@ Publish assets:
 php artisan vendor:publish --provider="Taki47\PrivacyPanel\PrivacyPanelServiceProvider" --tag=public
 ```
 
+Laravel's standard Composer update hook also republishes these files through
+the `laravel-assets` tag, keeping the browser asset in sync with package updates.
+
 This will publish:
 public/vendor/privacy-panel/
 
@@ -56,7 +59,9 @@ Include the consent banner in your base layout (for example layouts/app.blade.ph
 @include('privacy-panel::banner')
 ```
 
-Load the cookie script before any analytics scripts:
+Load the cookie script once, before any analytics scripts. The banner supplies
+the configuration consumed by this script, so do not include the script a
+second time after the banner:
 ```
 <script src="{{ asset('vendor/privacy-panel/js/panel.js') }}"></script>
 ```
